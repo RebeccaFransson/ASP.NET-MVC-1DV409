@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NumberGuessingGame.Models;
+using NumberGuessingGame.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,21 +12,9 @@ namespace NumberGuessingGame.Controllers
     {
         public ActionResult Index()
         {
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            var secretNumber = new SecretNumber();
+            var secretNumberViewModel = new SecretNumberViewModell(secretNumber);
+            return View(secretNumberViewModel);
         }
     }
 }

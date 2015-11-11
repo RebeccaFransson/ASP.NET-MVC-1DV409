@@ -7,7 +7,8 @@ namespace NumberGuessingGame.Models
 {
     public struct GuessedNumber
     {
-        private int? Number;
-        private Outcome Outcome;
+        public int? Number;
+        public Outcome Outcome;
+
     }
 }

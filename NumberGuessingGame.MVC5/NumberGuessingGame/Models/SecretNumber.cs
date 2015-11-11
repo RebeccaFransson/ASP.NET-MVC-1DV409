@@ -18,9 +18,9 @@ namespace NumberGuessingGame.Models
             {
                 if (_guessedNumbers.Count > MaxNumberOfGuesses)
                 {
-                    return true;
+                    return false;
                 }
-                return false;
+                return true;
             }
             
         }
@@ -36,9 +36,10 @@ namespace NumberGuessingGame.Models
         {
             get { return _lastGuessedNumber; }
         }
+
         public int? Number {
             get{
-                if (!CanMakeGuess)
+                if (CanMakeGuess)
                 {
                     return _number;
                 }
@@ -57,9 +58,12 @@ namespace NumberGuessingGame.Models
         }
         public Outcome MakeGuess(int guess)
         {
+            Outcome privateOutcome = Outcome.Indefinite;
+
             foreach (var old in _guessedNumbers)
             {
-                if(old.Equals(guess)){
+                if (old.Equals(guess))
+                {
                     return Outcome.OldGuess;
                 }
             }
@@ -69,23 +73,30 @@ namespace NumberGuessingGame.Models
             }
             if (guess > Number)
             {
-                return Outcome.High;
+                privateOutcome = Outcome.High;
             }
             if (guess < Number)
             {
-                return Outcome.Low;
+                privateOutcome = Outcome.Low;
             }
             if (guess == Number)
             {
-                return Outcome.Right;
+                privateOutcome = Outcome.Right;
             }
 
-            return Outcome.Indefinite;
+            
+            GuessedNumber newGuess;
+            newGuess.Number = guess;
+            newGuess.Outcome = privateOutcome;
+            _lastGuessedNumber = newGuess;
+
+            _guessedNumbers.Add(newGuess); //lägg till talet i listan
+            return privateOutcome;
         }
         public SecretNumber()//TODO: initiera listobjectet
         {
+            _guessedNumbers = new List<GuessedNumber>();
             Initialize();
-            List<GuessedNumber> list = new List<GuessedNumber>();
         }
 
         

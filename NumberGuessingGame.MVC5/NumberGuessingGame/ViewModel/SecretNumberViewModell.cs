@@ -8,10 +8,12 @@ namespace NumberGuessingGame.ViewModel
 {
     public class SecretNumberViewModell
     {
-        private int? _number;
-        SecretNumberViewModell(SecretNumber secretNumber)//Kanske ska få en GuessesNumber
-        {
-            _number = secretNumber.Number;
-        }
+        //private int? _secretNumber;
+        public int _guessedNumber { get; set; }
+
+        //private GuessedNumber _lastGuessedNumber;
+        public Outcome _outcome { get; set; }
+
+        
     }
 }

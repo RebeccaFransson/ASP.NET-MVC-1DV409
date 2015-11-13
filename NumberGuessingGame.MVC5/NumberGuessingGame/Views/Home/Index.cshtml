@@ -18,10 +18,12 @@
         </h1>
         @using (Html.BeginForm())
         {
+            @Html.DisplayFor(model => model._guessesLeftView)
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
             <div class="form-group">
                 @Html.LabelFor(model => model._guessedNumber)
+                <br />
                 @Html.EditorFor(model => model._guessedNumber)
                 @Html.ValidationMessageFor(model => model._guessedNumber)
             </div>
@@ -31,7 +33,10 @@
             </div>
 
             <div class="answer">
-                @Html.DisplayFor(model => model._outcome)
+                @Html.DisplayFor(model => model._outcomeView)
+            </div>
+            <div class="beforeguesses">
+                @Html.DisplayFor(model => model.beforeGuessesView)
             </div>
         }
 

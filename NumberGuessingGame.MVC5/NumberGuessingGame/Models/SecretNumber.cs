@@ -10,13 +10,14 @@ namespace NumberGuessingGame.Models
         private List<GuessedNumber> _guessedNumbers;
         private GuessedNumber _lastGuessedNumber;
         private int? _number;
-        public const int MaxNumberOfGuesses = 7;
+        public const int MaxNumberOfGuesses = 6;
+        private Outcome privateOutcome = Outcome.Indefinite;
 
-        public bool CanMakeGuess//TODO: Om användaren gissat rätt
+        public bool CanMakeGuess
         {
             get
             {
-                if (_guessedNumbers.Count > MaxNumberOfGuesses)
+                if (Count >= MaxNumberOfGuesses)
                 {
                     return false;
                 }
@@ -26,15 +27,19 @@ namespace NumberGuessingGame.Models
         }
         public int Count
         {
-            get { return _guessedNumbers.Count; }
+            get { return GuessedNumbers.Count; }
         }
-        public IList<GuessedNumber> GuessedNumbers//TODO: Readonly! Kanske skapa ny referens i egenskapen?
+        public IList<GuessedNumber> GuessedNumbers
         {
-            get { return _guessedNumbers; }
+            get { return _guessedNumbers.AsReadOnly(); }
         }
         public GuessedNumber LastGuessedNumber
         {
             get { return _lastGuessedNumber; }
+        }
+        public int GuessesLeft
+        {
+            get { return MaxNumberOfGuesses - Count; }
         }
 
         public int? Number {
@@ -58,18 +63,16 @@ namespace NumberGuessingGame.Models
         }
         public Outcome MakeGuess(int guess)
         {
-            Outcome privateOutcome = Outcome.Indefinite;
-
-            foreach (var old in _guessedNumbers)
-            {
-                if (old.Equals(guess))
-                {
-                    return Outcome.OldGuess;
-                }
-            }
             if (!CanMakeGuess)
             {
                 return Outcome.NoMoreGuesses;
+            }
+            foreach (var old in _guessedNumbers)
+            {
+                if (old.Number.Equals(guess))
+                {
+                    return Outcome.OldGuess;
+                }
             }
             if (guess > Number)
             {
@@ -83,17 +86,19 @@ namespace NumberGuessingGame.Models
             {
                 privateOutcome = Outcome.Right;
             }
-
             
+            return privateOutcome;
+        }
+        public void saveNewGuess(int guess)
+        {
             GuessedNumber newGuess;
             newGuess.Number = guess;
             newGuess.Outcome = privateOutcome;
             _lastGuessedNumber = newGuess;
 
             _guessedNumbers.Add(newGuess); //lägg till talet i listan
-            return privateOutcome;
         }
-        public SecretNumber()//TODO: initiera listobjectet
+        public SecretNumber()
         {
             _guessedNumbers = new List<GuessedNumber>();
             Initialize();

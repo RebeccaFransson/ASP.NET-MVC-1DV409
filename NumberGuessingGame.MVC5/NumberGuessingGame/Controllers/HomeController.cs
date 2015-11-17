@@ -32,22 +32,19 @@ namespace NumberGuessingGame.Controllers
             {
                 secretNumberObj = (SecretNumber)Session["SecretnumberObj"];
             }
-
             modelView._outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
-            
+
             modelView._guessesLeft = secretNumberObj.GuessesLeft;
             modelView._theNumber = secretNumberObj.Number;
-            modelView._beforeGuesses = secretNumberObj.GuessedNumbers;
+            //modelView._beforeGuesses = secretNumberObj.GuessedNumbers;
             modelView._canMakeGuess = secretNumberObj.CanMakeGuess;
 
             secretNumberObj.saveNewGuess(modelView._guessedNumber);
             modelView._lastGuessedNumber = secretNumberObj.LastGuessedNumber.Number;
-
             if (ModelState.IsValid)
             {
                 return View(modelView);
             }
-            
             return View();
         }
     }

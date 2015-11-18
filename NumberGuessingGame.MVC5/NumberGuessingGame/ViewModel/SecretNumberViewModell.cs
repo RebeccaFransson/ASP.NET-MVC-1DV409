@@ -34,10 +34,6 @@ namespace NumberGuessingGame.ViewModel
         public string _outcomeView
         {
             get {
-                //switch (secretnumberobj.MakeGuess(_guessedNumber))
-                //{
-                    
-                //}
                 switch (secretnumberobj.LastGuessedNumber.Outcome)
                 {
                     case Outcome.NoMoreGuesses:
@@ -65,16 +61,14 @@ namespace NumberGuessingGame.ViewModel
 
             }
         }
-        
 
-        public IList<GuessedNumber> _beforeGuesses {
+        public string doneOnSoManyGuesses {
             get
             {
-                return secretnumberobj.GuessedNumbers;
+                return string.Format("Du klarade det på {0} försöket", secretnumberobj.Count);
             }
-                }
+        }
 
-        public int _guessesLeft { get; set; }
         public string _guessesLeftView
         {
             get
@@ -89,7 +83,7 @@ namespace NumberGuessingGame.ViewModel
                 }
                 else
                 {
-                    return String.Format("{0} gissingar kvar!", _guessesLeft);
+                    return String.Format("{0} gissingar kvar!", secretnumberobj.GuessesLeft);
                 }
             }
         }

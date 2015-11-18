@@ -17,10 +17,13 @@ namespace NumberGuessingGame.Controllers
 
         public ActionResult Index()
         {
-            Session.Timeout = 1;
             if (Session["SecretnumberObj"] == null)//if session empty, create it
             {
                 Session["SecretnumberObj"] = secretNumberObj;
+            }
+            else
+            {
+                Session.Clear();
             }
             return View();
         }
@@ -40,7 +43,6 @@ namespace NumberGuessingGame.Controllers
             {
                 var outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
                 modelView.secretnumberobj = secretNumberObj;
-                modelView._guessesLeft = secretNumberObj.GuessesLeft;
                 
                 return View(modelView);
             }

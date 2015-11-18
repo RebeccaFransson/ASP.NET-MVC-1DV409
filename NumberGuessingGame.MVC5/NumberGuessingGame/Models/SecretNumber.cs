@@ -10,14 +10,14 @@ namespace NumberGuessingGame.Models
         private List<GuessedNumber> _guessedNumbers;
         private GuessedNumber _lastGuessedNumber;
         private int? _number;
-        public const int MaxNumberOfGuesses = 6;
+        public const int MaxNumberOfGuesses = 2;
         private Outcome privateOutcome = Outcome.Indefinite;
 
-        public bool CanMakeGuess
+        public bool CanMakeGuess//readonly
         {
             get
             {
-                if (Count >= MaxNumberOfGuesses)
+                if (Count > MaxNumberOfGuesses || _lastGuessedNumber.Number == _number)
                 {
                     return false;
                 }
@@ -25,7 +25,7 @@ namespace NumberGuessingGame.Models
             }
             
         }
-        public int Count
+        public int Count//readonly
         {
             get { return GuessedNumbers.Count; }
         }
@@ -44,7 +44,7 @@ namespace NumberGuessingGame.Models
 
         public int? Number {
             get{
-                if (CanMakeGuess)
+                if (!CanMakeGuess)
                 {
                     return _number;
                 }
@@ -63,9 +63,13 @@ namespace NumberGuessingGame.Models
         }
         public Outcome MakeGuess(int guess)
         {
-            if (!CanMakeGuess)
+            GuessedNumber newGuess;
+            newGuess.Number = guess;
+            newGuess.Outcome = privateOutcome;
+            _lastGuessedNumber = newGuess;
+            if (guess < 1 || guess > 100)
             {
-                return Outcome.NoMoreGuesses;
+                throw new ArgumentOutOfRangeException();
             }
             foreach (var old in _guessedNumbers)
             {
@@ -74,30 +78,38 @@ namespace NumberGuessingGame.Models
                     return Outcome.OldGuess;
                 }
             }
-            if (guess > Number)
+            if (guess > _number)
             {
                 privateOutcome = Outcome.High;
             }
-            if (guess < Number)
+            if (guess < _number)
             {
                 privateOutcome = Outcome.Low;
             }
-            if (guess == Number)
+            if (guess == _number)
             {
                 privateOutcome = Outcome.Right;
             }
-            
-            return privateOutcome;
-        }
-        public void saveNewGuess(int guess)
-        {
-            GuessedNumber newGuess;
+
+            //int index = _guessedNumbers.FindIndex(newGuess);
             newGuess.Number = guess;
             newGuess.Outcome = privateOutcome;
             _lastGuessedNumber = newGuess;
 
-            _guessedNumbers.Add(newGuess); //lägg till talet i listan
+            _guessedNumbers.Add(_lastGuessedNumber); //lägg till talet i listan
+            if (!CanMakeGuess)
+            {
+                newGuess.Outcome = privateOutcome;
+                _lastGuessedNumber = newGuess;
+
+                _guessedNumbers.Add(_lastGuessedNumber);
+                return Outcome.NoMoreGuesses;
+            }
+
+
+            return privateOutcome;
         }
+        
         public SecretNumber()
         {
             _guessedNumbers = new List<GuessedNumber>();

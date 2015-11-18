@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
 namespace NumberGuessingGame.Controllers
 {
     public class HomeController : Controller
@@ -18,6 +17,7 @@ namespace NumberGuessingGame.Controllers
 
         public ActionResult Index()
         {
+            Session.Timeout = 1;
             if (Session["SecretnumberObj"] == null)//if session empty, create it
             {
                 Session["SecretnumberObj"] = secretNumberObj;
@@ -32,20 +32,19 @@ namespace NumberGuessingGame.Controllers
             {
                 secretNumberObj = (SecretNumber)Session["SecretnumberObj"];
             }
-            modelView._outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
-
-            modelView._guessesLeft = secretNumberObj.GuessesLeft;
-            modelView._theNumber = secretNumberObj.Number;
-            //modelView._beforeGuesses = secretNumberObj.GuessedNumbers;
-            modelView._canMakeGuess = secretNumberObj.CanMakeGuess;
-
-            secretNumberObj.saveNewGuess(modelView._guessedNumber);
-            modelView._lastGuessedNumber = secretNumberObj.LastGuessedNumber.Number;
+            else
+            {
+                return View("Timeout");
+            }
             if (ModelState.IsValid)
             {
+                var outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
+                modelView.secretnumberobj = secretNumberObj;
+                modelView._guessesLeft = secretNumberObj.GuessesLeft;
+                
                 return View(modelView);
             }
-            return View();
+            return View("Index");
         }
     }
 }

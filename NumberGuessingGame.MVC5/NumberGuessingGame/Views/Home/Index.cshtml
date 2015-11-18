@@ -1,42 +1,63 @@
-﻿@model NumberGuessingGame.ViewModel.SecretNumberViewModell
+﻿@model  NumberGuessingGame.ViewModel.SecretNumberViewModell
+
 @{
-    Layout = null;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+@Html.Partial("flashMessage")
+@using (Html.BeginForm())
+{
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-    <div> 
+    <h3>@Html.DisplayFor(model => model._guessesLeftView)</h3>
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        <div class="form-group">
+            @Html.LabelFor(model => model._guessedNumber)
+            <br />
+            @Html.EditorFor(model => model._guessedNumber)
+            @Html.ValidationMessageFor(model => model._guessedNumber)
+        </div>
 
-        <h1>
-            Gissa hemliga talet
-        </h1>
-        @using (Html.BeginForm())
-        {
-            @Html.DisplayFor(model => model._guessesLeftView)
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary()
-            <div class="form-group">
-                @Html.LabelFor(model => model._guessedNumber)
-                <br />
-                @Html.EditorFor(model => model._guessedNumber)
-                @Html.ValidationMessageFor(model => model._guessedNumber)
-            </div>
-
-            <div class="form-group">
+    if (Model != null)
+    {
+        <div class="form-group">
+            @if (Model.secretnumberobj.CanMakeGuess)
+            {
                 <input type="submit" value="Skicka" />
-            </div>
+            }
+        </div>
+
+
+
 
             <div class="answer">
                 @Html.DisplayFor(model => model._outcomeView)
             </div>
-        }
+                <div class="beforeGuessed">
+                    @Html.DisplayFor(model => model._beforeGuesses)
+                </div>
+                <div class="beforeGuessed">
+                    <ol>
+                        @foreach (var item in Model.secretnumberobj.GuessedNumbers)
+                        {
+                            <li>@item.Number -> @item.Outcome</li>
+                        }
+                    </ol>
+                    @if (!Model.secretnumberobj.CanMakeGuess)
+                    {
+                        @Html.ActionLink("Slumpa fram nytt hemligt tal", "Index");
+                    }
+                    
 
-    </div>
-</body>
-</html>
+                </div>
+    }
+    else
+    {
+        <input type="submit" value="Skicka" />
+    }
+}
+
+
+
+

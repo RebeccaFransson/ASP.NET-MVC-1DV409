@@ -17,13 +17,25 @@ namespace NumberGuessingGame.Models
         {
             get
             {
-                if (Count >= MaxNumberOfGuesses || _lastGuessedNumber.Number == _number)
+                if (Count >= MaxNumberOfGuesses || RightGuess)
                 {
                     return false;
                 }
                 return true;
             }
             
+        }
+        public bool RightGuess//readonly
+        {
+            get
+            {
+                if (_lastGuessedNumber.Number == _number)
+                {
+                    return true;
+                }
+                return false;
+            }
+
         }
         public int Count//readonly
         {
@@ -41,7 +53,17 @@ namespace NumberGuessingGame.Models
         {
             get { return MaxNumberOfGuesses - Count; }
         }
-
+        public bool lastTry//readonly
+        {
+            get
+            {
+                if (Count == MaxNumberOfGuesses)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
         public int? Number {
             get{
                 if (!CanMakeGuess)
@@ -61,8 +83,13 @@ namespace NumberGuessingGame.Models
             Number = nr;
 
         }
+
         public Outcome MakeGuess(int guess)
         {
+            if (!CanMakeGuess)
+            {
+                return Outcome.NoMoreGuesses;
+            }
             if (guess < 1 || guess > 100)
             {
                 throw new ArgumentOutOfRangeException();
@@ -82,18 +109,15 @@ namespace NumberGuessingGame.Models
             else if (guess == _number){
                 privateOutcome = Outcome.Right;
             }
-            _lastGuessedNumber = new GuessedNumber{ 
+            _lastGuessedNumber = new GuessedNumber
+            {
                 Number = guess,
                 Outcome = privateOutcome
             };
-            _guessedNumbers.Add(_lastGuessedNumber); //lägg till talet i listan
-            if (!CanMakeGuess)
+            _guessedNumbers.Add(_lastGuessedNumber);
+            if (lastTry)
             {
-                _lastGuessedNumber = new GuessedNumber
-                {
-                    Number = guess,
-                    Outcome = Outcome.NoMoreGuesses
-                };
+                return Outcome.LastTry;
             }
             return privateOutcome;
         }

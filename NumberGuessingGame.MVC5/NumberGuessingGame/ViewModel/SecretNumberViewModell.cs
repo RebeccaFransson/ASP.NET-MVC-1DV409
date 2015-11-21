@@ -18,25 +18,21 @@ namespace NumberGuessingGame.ViewModel
                 return secretnumberobj.Number;
             }
         }
-
-        public int? _lastGuessedNumber {
-            get
-            {
-                return secretnumberobj.LastGuessedNumber.Number;
-            }
-        }
-
+        
         [DisplayName("Gissa på ett tal mellan 1 och 100")]
         [Required(ErrorMessage = "Ett tal måste anges")]
         [Range(1, 100, ErrorMessage = "Ange ett tal mellan 1 och 100!")]
         public int _guessedNumber { get; set; }
-
+        public int? _lastGuessedNumber {get { return secretnumberobj.LastGuessedNumber.Number; } }
+        public Outcome outcome { get; set; }
         public string _outcomeView
         {
             get {
-                switch (secretnumberobj.LastGuessedNumber.Outcome)
+                switch (outcome)
                 {
                     case Outcome.NoMoreGuesses:
+                        return "Inga fler gissingar, starta gärna ett nytt spel!";
+                    case Outcome.LastTry:
                         if (_lastGuessedNumber < secretnumberobj.Number)
                         {
                             return String.Format("{0} är för lågt. Inga fler gissningar! Det hemliga talet var {1}", _lastGuessedNumber, secretnumberobj.Number);
@@ -65,25 +61,58 @@ namespace NumberGuessingGame.ViewModel
         public string doneOnSoManyGuesses {
             get
             {
-                return string.Format("Du klarade det på {0} försöket", secretnumberobj.Count);
+                if (secretnumberobj.RightGuess)
+                {
+                    switch (secretnumberobj.Count)
+                    {
+                        case 1:
+                            return "Du klarade det på första försöket!";
+                        case 2:
+                            return "Du klarade det på andra försöket!";
+                        case 3:
+                            return "Du klarade det på tredje försöket!";
+                        case 4:
+                            return "Du klarade det på fjärde försöket!";
+                        case 5:
+                            return "Du klarade det på femte försöket!";
+                        case 6:
+                            return "Du klarade det på sjätte försöket!";
+                        case 7:
+                            return "Du klarade det på sjunde försöket!";
+                        default:
+                            return "Du klarade det tyvärr inte...";
+                    }
+                }
+                return null;
             }
         }
 
-        public string _guessesLeftView
+        public string guessesLeft
         {
             get
             {
-                if (!secretnumberobj.CanMakeGuess)
+                if (secretnumberobj.RightGuess)
                 {
-                    if (secretnumberobj.Number == _lastGuessedNumber)
-                    {
-                        return "Rätt gissat!";
-                    }
-                    return "Inga fler gissingar!";
+                    return "Rätt gissat!";
                 }
-                else
+                switch (secretnumberobj.Count)
                 {
-                    return String.Format("{0} gissingar kvar!", secretnumberobj.GuessesLeft);
+                    case 0:
+                        return "Första gissingen!";
+                    case 1:
+                        return "Andra gissingen!";
+                    case 2:
+                        return "Tredje gissingen!";
+                    case 3:
+                        return "Fjärde gissingen!";
+                    case 4:
+                        return "Femte gissingen!";
+                    case 5:
+                        return "Sjätte gissingen!";
+                    case 6:
+                        return "Sista gissingen!";
+                    default:
+                        return "Inga gissingar kvar!";
                 }
             }
         }

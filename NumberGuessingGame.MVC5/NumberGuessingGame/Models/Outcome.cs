@@ -12,6 +12,7 @@ namespace NumberGuessingGame.Models
         High,
         Right,
         NoMoreGuesses,
-        OldGuess
+        OldGuess,
+        LastTry
     }
 }

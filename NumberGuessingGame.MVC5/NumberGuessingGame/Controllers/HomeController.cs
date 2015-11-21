@@ -37,7 +37,7 @@ namespace NumberGuessingGame.Controllers
             }
             if (ModelState.IsValid)
             {
-                var outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
+                modelView.outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
                 modelView.secretnumberobj = secretNumberObj;
                 
                 return View(modelView);
@@ -48,7 +48,7 @@ namespace NumberGuessingGame.Controllers
         public ActionResult onesMore()
         {
             Session["SecretnumberObj"] = null;
-            return View("Index");
+            return RedirectToAction("Index");
         }
     }
 }

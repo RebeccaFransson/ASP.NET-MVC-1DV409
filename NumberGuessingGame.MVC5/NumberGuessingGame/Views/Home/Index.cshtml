@@ -7,57 +7,42 @@
 
 @using (Html.BeginForm())
 {
-    
-        <h3>@Html.DisplayFor(model => model._guessesLeftView)</h3>
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary()
-            <br />
 
-    if (Model != null)
-    {
-        if (Model.secretnumberobj.CanMakeGuess)
-        {
+        <h3>@Html.DisplayFor(model => model.guessesLeft)</h3>
+        <h4>@Html.DisplayFor(model => model.doneOnSoManyGuesses)</h4>
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <br />
+            
 
             @Html.LabelFor(model => model._guessedNumber)<br />
-                    @Html.EditorFor(model => model._guessedNumber)
-                    <input type="submit" value="Skicka" />
-        }
-        else
-        {
-            @Html.DisplayFor(model => model.doneOnSoManyGuesses)
-        }
-    }
-    else
-    {
+            @Html.EditorFor(model => model._guessedNumber)
+            <input type="submit" value="Skicka" />
+}
 
-        @Html.LabelFor(model => model._guessedNumber)<br />
-                @Html.EditorFor(model => model._guessedNumber)
-                <input type="submit" value="Skicka" />
-            }
-            }
-
-        
-                
-
-                @if (Model != null)
-                {
-                    <ol>
-                        @foreach (var item in Model.secretnumberobj.GuessedNumbers)
-                        {
-                            <li>@item.Number -> @item.Outcome</li>
-                        }
-                    </ol>
-                    if (Model.secretnumberobj.CanMakeGuess)
+            @if (Model != null)
+            {
+                <table border="1" style="width:100px">
+                    @foreach (var number in Model.secretnumberobj.GuessedNumbers)
                     {
-                        @Html.DisplayFor(model => model._outcomeView)
-                    }else
-	                {
-	                    @Html.ActionLink("Slumpa fram nytt hemligt tal", "onesMore");
+                        <tr>
+                            <td>@number.Number</td>
+                            <td>@number.Outcome</td>
+                        </tr>
                     }
+                </table>
 
-                    
 
-                }
+                        <h4>@Html.DisplayFor(model => model._outcomeView)</h4>
+                        <br />
+                        if (!Model.secretnumberobj.CanMakeGuess)
+                        {
+                        @Html.ActionLink("Slumpa fram nytt hemligt tal", "onesMore");
+
+                        }
+                        }
+
+
 
 
 

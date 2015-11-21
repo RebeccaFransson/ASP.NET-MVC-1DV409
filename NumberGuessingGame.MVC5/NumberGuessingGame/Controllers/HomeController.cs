@@ -21,10 +21,6 @@ namespace NumberGuessingGame.Controllers
             {
                 Session["SecretnumberObj"] = secretNumberObj;
             }
-            else
-            {
-                Session.Clear();
-            }
             return View();
         }
 
@@ -46,6 +42,12 @@ namespace NumberGuessingGame.Controllers
                 
                 return View(modelView);
             }
+            return View("Index");
+        }
+
+        public ActionResult onesMore()
+        {
+            Session["SecretnumberObj"] = null;
             return View("Index");
         }
     }

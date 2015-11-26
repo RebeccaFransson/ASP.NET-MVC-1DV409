@@ -9,45 +9,36 @@ namespace NumberGuessingGame.Controllers
 {
     public class HomeController : Controller
     {
-        private SecretNumber _secretNumber;
-        public SecretNumber secretNumberObj{
-            get { return _secretNumber ?? (_secretNumber = new SecretNumber()); }
-            set { _secretNumber = value;  }
+        public SecretNumber SecretNumberObj{
+            get { return Session["SecretnumberObj"] as SecretNumber ?? ((SecretNumber)(Session["SecretnumberObj"] = new SecretNumber())); }
         }
 
         public ActionResult Index()
         {
-            if (Session["SecretnumberObj"] == null)//if session empty, create it
-            {
-                Session["SecretnumberObj"] = secretNumberObj;
-            }
-            return View();
+            return View(new SecretNumberViewModell { Secretnumberobj = SecretNumberObj });
         }
 
         [HttpPost]
-        public ActionResult Index([Bind(Include = "_guessedNumber")] SecretNumberViewModell modelView)
+        public ActionResult Index([Bind(Include = "GuessedNumber")] SecretNumberViewModell modelView)
         {
-            if (Session["SecretnumberObj"] != null)
-            {
-                secretNumberObj = (SecretNumber)Session["SecretnumberObj"];
-            }
-            else
+            if (Session.IsNewSession)
             {
                 return View("Timeout");
             }
+
+            modelView.Secretnumberobj = SecretNumberObj;
+
             if (ModelState.IsValid)
             {
-                modelView.outcome = secretNumberObj.MakeGuess(modelView._guessedNumber);
-                modelView.secretnumberobj = secretNumberObj;
-                
-                return View(modelView);
+                modelView.Outcome = SecretNumberObj.MakeGuess(modelView.GuessedNumber.Value);
             }
-            return View("Index");
+
+            return View(modelView);
         }
 
         public ActionResult onesMore()
         {
-            Session["SecretnumberObj"] = null;
+            SecretNumberObj.Initialize();
             return RedirectToAction("Index");
         }
     }

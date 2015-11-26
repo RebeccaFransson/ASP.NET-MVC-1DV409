@@ -10,60 +10,68 @@ namespace NumberGuessingGame.ViewModel
 {
     public class SecretNumberViewModell
     {
-        public SecretNumber secretnumberobj { get; set; }
+        public SecretNumber Secretnumberobj { get; set; }
 
-        public int? _theNumber {
-            get
-            {
-                return secretnumberobj.Number;
-            }
-        }
-        
         [DisplayName("Gissa på ett tal mellan 1 och 100")]
         [Required(ErrorMessage = "Ett tal måste anges")]
         [Range(1, 100, ErrorMessage = "Ange ett tal mellan 1 och 100!")]
-        public int _guessedNumber { get; set; }
-        public int? _lastGuessedNumber {get { return secretnumberobj.LastGuessedNumber.Number; } }
-        public Outcome outcome { get; set; }
-        public string _outcomeView
+        public int? GuessedNumber { get; set; }
+        public int? LastGuessedNumber { get { return Secretnumberobj.LastGuessedNumber.Number; } }
+
+        public Outcome Outcome { get; set; }
+        public string OutcomeView
         {
-            get {
-                switch (outcome)
+            get
+            {
+                string outcome;
+
+                switch (Outcome)
                 {
                     case Outcome.NoMoreGuesses:
-                        return "Inga fler gissingar, starta gärna ett nytt spel!";
-                    case Outcome.LastTry:
-                        if (_lastGuessedNumber < secretnumberobj.Number)
-                        {
-                            return String.Format("{0} är för lågt. Inga fler gissningar! Det hemliga talet var {1}", _lastGuessedNumber, secretnumberobj.Number);
-                        }
-                        else
-                        {
-                            return String.Format("{0} är för högt. Inga fler gissningar! Det hemliga talet var {1}", _lastGuessedNumber, secretnumberobj.Number);
-                        }
+                        outcome = "Inga fler gissingar, starta gärna ett nytt spel!";
+                        break;
                     case Outcome.Indefinite:
-                        return "Ett fel uppstod";
+                        outcome = "Ett fel uppstod";
+                        break;
+
                     case Outcome.Low:
-                        return String.Format("{0} är för lågt", _lastGuessedNumber);
+                        outcome = String.Format("{0} är för lågt", LastGuessedNumber);
+                        break;
+
                     case Outcome.High:
-                        return String.Format("{0} är för högt", _lastGuessedNumber);
+                        outcome = String.Format("{0} är för högt", LastGuessedNumber);
+                        break;
+
                     case Outcome.Right:
-                        return String.Format("{0} är rätt gissat!", _lastGuessedNumber);
+                        outcome = String.Format("{0} är rätt gissat!", LastGuessedNumber);
+                        break;
+
                     case Outcome.OldGuess:
-                        return String.Format("Du har redan gissat på {0}!", _lastGuessedNumber);
+                        outcome = String.Format("Du har redan gissat på {0}!", LastGuessedNumber);
+                        break;
+
                     default:
-                        return "Fel uppstod";
+                        outcome = "Fel uppstod";
+                        break;
                 }
+
+                if (!Secretnumberobj.CanMakeGuess && Secretnumberobj.LastGuessedNumber.Outcome != Outcome.Right)
+                {
+                    outcome += String.Format(" Inga fler gissningar! Det hemliga talet var {0}", Secretnumberobj.Number);
+                }
+
+                return outcome;
 
             }
         }
 
-        public string doneOnSoManyGuesses {
+        public string DoneOnSoManyGuesses
+        {
             get
             {
-                if (secretnumberobj.RightGuess)
+                if (Secretnumberobj.RightGuess)
                 {
-                    switch (secretnumberobj.Count)
+                    switch (Secretnumberobj.Count)
                     {
                         case 1:
                             return "Du klarade det på första försöket!";
@@ -87,15 +95,15 @@ namespace NumberGuessingGame.ViewModel
             }
         }
 
-        public string guessesLeft
+        public string GuessesLeft
         {
             get
             {
-                if (secretnumberobj.RightGuess)
+                if (Secretnumberobj.RightGuess)
                 {
                     return "Rätt gissat!";
                 }
-                switch (secretnumberobj.Count)
+                switch (Secretnumberobj.Count)
                 {
                     case 0:
                         return "Första gissingen!";

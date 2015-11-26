@@ -8,39 +8,39 @@
 @using (Html.BeginForm())
 {
 
-        <h3>@Html.DisplayFor(model => model.guessesLeft)</h3>
-        <h4>@Html.DisplayFor(model => model.doneOnSoManyGuesses)</h4>
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary()
-            <br />
-            
+    <h3>@Html.DisplayFor(model => model.GuessesLeft)</h3>
+        <h4>@Html.DisplayFor(model => model.DoneOnSoManyGuesses)</h4>
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        <br />
 
-            @Html.LabelFor(model => model._guessedNumber)<br />
-            @Html.EditorFor(model => model._guessedNumber)
+
+            @Html.LabelFor(model => model.GuessedNumber)<br />
+            @Html.EditorFor(model => model.GuessedNumber)
             <input type="submit" value="Skicka" />
 }
 
-            @if (Model != null)
+@if (Model.Secretnumberobj.Count > 0)
             {
-                <table border="1" style="width:100px">
-                    @foreach (var number in Model.secretnumberobj.GuessedNumbers)
-                    {
-                        <tr>
-                            <td>@number.Number</td>
-                            <td>@number.Outcome</td>
-                        </tr>
-                    }
-                </table>
+    <table border="1" style="width:100px">
+        @foreach (var number in Model.Secretnumberobj.GuessedNumbers)
+        {
+            <tr>
+                <td>@number.Number</td>
+                <td>@number.Outcome</td>
+            </tr>
+        }
+    </table>
 
 
-                        <h4>@Html.DisplayFor(model => model._outcomeView)</h4>
+                <h4>@Html.DisplayFor(model => model.OutcomeView)</h4>
                         <br />
-                        if (!Model.secretnumberobj.CanMakeGuess)
-                        {
-                        @Html.ActionLink("Slumpa fram nytt hemligt tal", "onesMore");
+    if (!Model.Secretnumberobj.CanMakeGuess)
+    {
+        @Html.ActionLink("Slumpa fram nytt hemligt tal", "onesMore");
 
-                        }
-                        }
+    }
+}
 
 
 

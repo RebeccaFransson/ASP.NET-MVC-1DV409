@@ -13,31 +13,23 @@ namespace NumberGuessingGame.Models
         public const int MaxNumberOfGuesses = 7;
         private Outcome privateOutcome = Outcome.Indefinite;
 
-        public bool CanMakeGuess//readonly
+        public bool CanMakeGuess
         {
             get
             {
-                if (Count >= MaxNumberOfGuesses || RightGuess)
-                {
-                    return false;
-                }
-                return true;
+                return Count < MaxNumberOfGuesses && !RightGuess;
             }
             
         }
-        public bool RightGuess//readonly
+        public bool RightGuess
         {
             get
             {
-                if (_lastGuessedNumber.Number == _number)
-                {
-                    return true;
-                }
-                return false;
+                return _lastGuessedNumber.Number == _number;
             }
 
         }
-        public int Count//readonly
+        public int Count
         {
             get { return GuessedNumbers.Count; }
         }
@@ -53,15 +45,11 @@ namespace NumberGuessingGame.Models
         {
             get { return MaxNumberOfGuesses - Count; }
         }
-        public bool lastTry//readonly
+        public bool lastTry
         {
             get
             {
-                if (Count == MaxNumberOfGuesses)
-                {
-                    return true;
-                }
-                return false;
+                return Count == MaxNumberOfGuesses;
             }
         }
         public int? Number {
@@ -79,9 +67,9 @@ namespace NumberGuessingGame.Models
         public void Initialize()//TODO: initiserar klassens fält och egenskaper - listan rensas -
         {
             Random random = new Random();
-            int nr = random.Next(1, 101);
-            Number = nr;
-
+            Number = random.Next(1, 101);
+            _guessedNumbers.Clear();
+            _lastGuessedNumber = new GuessedNumber();
         }
 
         public Outcome MakeGuess(int guess)
@@ -115,16 +103,12 @@ namespace NumberGuessingGame.Models
                 Outcome = privateOutcome
             };
             _guessedNumbers.Add(_lastGuessedNumber);
-            if (lastTry)
-            {
-                return Outcome.LastTry;
-            }
             return privateOutcome;
         }
         
         public SecretNumber()
         {
-            _guessedNumbers = new List<GuessedNumber>();
+            _guessedNumbers = new List<GuessedNumber>(MaxNumberOfGuesses);
             Initialize();
         }
 
